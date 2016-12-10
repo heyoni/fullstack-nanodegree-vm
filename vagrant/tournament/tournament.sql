@@ -5,5 +5,36 @@
 --
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
+DROP TABLE IF EXISTS games;
+DROP TABLE IF EXISTS players;
 
 
+CREATE TABLE players (
+  id   SERIAL,
+  name TEXT,
+  PRIMARY KEY (id)
+);
+CREATE TABLE games (
+  winner INT,
+  loser  INT,
+  FOREIGN KEY (winner) REFERENCES players (id),
+  FOREIGN KEY (loser) REFERENCES players (id)
+);
+
+INSERT INTO players (name) VALUES
+  ('jonathan revah'),
+  ('lauren witter');
+
+CREATE VIEW standing AS
+  SELECT
+    players.id,
+    players.name,
+    count(games.winner)                               AS wins,
+    (SELECT count(*)
+     FROM games
+     WHERE loser = players.id OR winner = players.id) AS matches
+  FROM players
+    LEFT JOIN games ON games.winner = players.id
+  GROUP BY id
+  ORDER BY wins
+  DESC;

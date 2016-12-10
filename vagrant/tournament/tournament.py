@@ -13,25 +13,47 @@ def connect():
 
 def deleteMatches():
     """Remove all the match records from the database."""
+    conn = connect()
+    c = conn.cursor()
+    c.execute('DELETE FROM games')
+    conn.commit()
+    c.close()
+    conn.close()
 
 
 def deletePlayers():
     """Remove all the player records from the database."""
+    conn = connect()
+    c = conn.cursor()
+    c.execute('DELETE FROM players')
+    conn.commit()
+    c.close()
+    conn.close()
 
 
 def countPlayers():
     """Returns the number of players currently registered."""
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT count(*) FROM players")
+    return int(c.fetchone()[0])
 
 
 def registerPlayer(name):
     """Adds a player to the tournament database.
-  
+
     The database assigns a unique serial id number for the player.  (This
     should be handled by your SQL database schema, not in your Python code.)
-  
+
     Args:
       name: the player's full name (need not be unique).
     """
+    conn = connect()
+    c = conn.cursor()
+    c.execute('INSERT INTO players (name) VALUES (%s)', (name,))
+    conn.commit()
+    c.close()
+    conn.close()
 
 
 def playerStandings():
@@ -47,6 +69,13 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT * FROM standing")
+    results = c.fetchall()
+    c.close()
+    conn.close()
+    return results
 
 
 def reportMatch(winner, loser):
@@ -56,16 +85,23 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
- 
- 
+    conn = connect()
+    c = conn.cursor()
+    c.execute(
+        "INSERT INTO games (winner, loser) VALUES (%s, %s)", (winner, loser))
+    conn.commit()
+    c.close()
+    conn.close()
+
+
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
-  
+
     Assuming that there are an even number of players registered, each player
     appears exactly once in the pairings.  Each player is paired with another
     player with an equal or nearly-equal win record, that is, a player adjacent
     to him or her in the standings.
-  
+
     Returns:
       A list of tuples, each of which contains (id1, name1, id2, name2)
         id1: the first player's unique id
@@ -73,5 +109,41 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+    conn = connect()
+    c = conn.cursor()
+    c.execute("SELECT id, name FROM standing")
+    # print(dir(c))
+    standings = c.fetchall()
+    counter = 0
+    pairs = []
+    while counter < len(standings):
+        pairs.append((standings[counter][0], standings[counter][1],
+                     standings[counter + 1][0], standings[counter + 1][1]))
+        print(pairs)
+        # print(standings[counter + 1])
+        counter += 2
+    for pair in pairs:
+        print(type(pair))
+    conn.commit()
+    c.close()
+    conn.close()
+    return pairs
 
 
+if __name__ == '__main__':
+    deleteMatches()
+    deletePlayers()
+    registerPlayer("Twilight Sparkle")
+    registerPlayer("Fluttershy")
+    registerPlayer("Applejack")
+    registerPlayer("Pinkie Pie")
+    registerPlayer("Rarity")
+    registerPlayer("Rainbow Dash")
+    registerPlayer("Princess Celestia")
+    registerPlayer("Princess Luna")
+    standings = playerStandings()
+    [id1, id2, id3, id4, id5, id6, id7, id8] = [row[0] for row in standings]
+    reportMatch(id1, id2)
+    reportMatch(id3, id4)
+    reportMatch(id5, id6)
+    reportMatch(id7, id8)

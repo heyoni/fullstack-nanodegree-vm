@@ -5,9 +5,11 @@
 --
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
-DROP TABLE IF EXISTS games;
-DROP TABLE IF EXISTS players;
-
+-- DROP TABLE IF EXISTS games;
+-- DROP TABLE IF EXISTS players;
+DROP DATABASE IF EXISTS tournament;
+CREATE DATABASE tournament;
+\c tournament
 
 CREATE TABLE players (
   id   SERIAL,
@@ -15,6 +17,7 @@ CREATE TABLE players (
   PRIMARY KEY (id)
 );
 CREATE TABLE games (
+  id SERIAL,
   winner INT,
   loser  INT,
   FOREIGN KEY (winner) REFERENCES players (id),
@@ -35,6 +38,6 @@ CREATE VIEW standing AS
      WHERE loser = players.id OR winner = players.id) AS matches
   FROM players
     LEFT JOIN games ON games.winner = players.id
-  GROUP BY id
+  GROUP BY players.id
   ORDER BY wins
   DESC;

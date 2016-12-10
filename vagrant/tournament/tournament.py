@@ -19,8 +19,7 @@ def connect():
 def deleteMatches():
     """Remove all the match records from the database."""
     conn, c = connect()
-    # c = conn.cursor()
-    c.execute('DELETE FROM games')
+    c.execute('TRUNCATE games')
     conn.commit()
     c.close()
     conn.close()
@@ -29,8 +28,9 @@ def deleteMatches():
 def deletePlayers():
     """Remove all the player records from the database."""
     conn, c = connect()
-    # c = conn.cursor()
-    c.execute('DELETE FROM players')
+    # Benefits of using TRUNCATE over DELETE
+    # https://www.postgresql.org/docs/9.1/static/sql-truncate.html
+    c.execute('TRUNCATE players CASCADE')
     conn.commit()
     c.close()
     conn.close()
@@ -53,7 +53,9 @@ def registerPlayer(name):
       name: the player's full name (need not be unique).
     """
     conn, c = connect()
-    c.execute('INSERT INTO players (name) VALUES (%s)', (name,))
+    query = 'INSERT INTO players (name) VALUES (%s)'
+    params = (name,)
+    c.execute(query, params)
     conn.commit()
     c.close()
     conn.close()
@@ -88,8 +90,9 @@ def reportMatch(winner, loser):
       loser:  the id number of the player who lost
     """
     conn, c = connect()
-    c.execute(
-        "INSERT INTO games (winner, loser) VALUES (%s, %s)", (winner, loser))
+    query = "INSERT INTO games (winner, loser) VALUES (%s, %s)"
+    params = (winner, loser)
+    c.execute(query, params)
     conn.commit()
     c.close()
     conn.close()
@@ -112,18 +115,13 @@ def swissPairings():
     """
     conn, c = connect()
     c.execute("SELECT id, name FROM standing")
-    # print(dir(c))
     standings = c.fetchall()
     counter = 0
     pairs = []
     while counter < len(standings):
         pairs.append((standings[counter][0], standings[counter][1],
-                     standings[counter + 1][0], standings[counter + 1][1]))
-        print(pairs)
-        # print(standings[counter + 1])
+                      standings[counter + 1][0], standings[counter + 1][1]))
         counter += 2
-    for pair in pairs:
-        print(type(pair))
     conn.commit()
     c.close()
     conn.close()

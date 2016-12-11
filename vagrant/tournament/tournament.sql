@@ -20,6 +20,7 @@ CREATE TABLE games (
   id SERIAL,
   winner INT,
   loser  INT,
+  PRIMARY KEY (id),
   FOREIGN KEY (winner) REFERENCES players (id),
   FOREIGN KEY (loser) REFERENCES players (id)
 );

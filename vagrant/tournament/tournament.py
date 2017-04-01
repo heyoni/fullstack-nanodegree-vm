@@ -114,8 +114,8 @@ def swissPairings():
         name2: the second player's name
     """
     conn, c = connect()
-    c.execute("SELECT id, name FROM standing")
-    standings = c.fetchall()
+    # c.execute("SELECT id, name FROM standing")
+    standings = playerStandings()
     counter = 0
     pairs = []
     while counter < len(standings):

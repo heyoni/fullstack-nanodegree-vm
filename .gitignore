@@ -1,1 +1,29 @@
 # Created by .ignore support plugin (hsz.mobi)
+/vagrant/testVagrant/
+.DS_Store
+.idea/.DS_Store
+.idea/codeStyleSettings.xml
+.idea/dataSources.local.xml
+.idea/dataSources/
+.idea/encodings.xml
+.idea/fullstack.iml
+.idea/inspectionProfiles/
+.idea/markdown-navigator.xml
+.idea/markdown-navigator/
+.idea/misc.xml
+.idea/modules.xml
+.idea/sqldialects.xml
+.idea/vagrant.xml
+.idea/vcs.xml
+.idea/workspace.xml
+Would skip repository oauth/
+vagrant/.DS_Store
+vagrant/.idea/
+vagrant/.vagrant/
+vagrant/forum/.idea/
+vagrant/forum/forumdb.pyc
+vagrant/puppypopulator/
+vagrant/testVagrant/database_setup.pyc
+vagrant/testVagrant/restaurantmenu.db
+vagrant/tournament/.idea/
+vagrant/tournament/tournament.pyc

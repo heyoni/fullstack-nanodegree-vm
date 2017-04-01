@@ -1,5 +1,5 @@
-rdb-fullstack
-=============
+Project Tournament Results
+==========================
 
 Common code for the Relational Databases and Full Stack Fundamentals courses
 
